@@ -12,3 +12,12 @@
 
 /* dashboard-v1 */
 .dashboard-hero{display:flex;justify-content:space-between;gap:16px;align-items:center;background:linear-gradient(135deg,#fff,#f0fbfb)}.dashboard-hero h2{font-size:22px;margin-bottom:4px}.dashboard-sync{font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 12px;white-space:nowrap}.dashboard-quick{display:grid;grid-template-columns:auto minmax(0,1fr)auto;gap:10px;align-items:center}.dashboard-quick input{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fbfcfe}.dashboard-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}.dashboard-metric{background:white;border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 4px 16px #18314e0a}.dashboard-metric small,.dashboard-metric span{display:block;color:var(--muted);font-size:12px}.dashboard-metric strong{display:block;font-size:24px;margin:5px 0}.dashboard-metric.blue strong{color:#1f6feb}.dashboard-metric.purple strong{color:#7c3aed}.dashboard-metric.green strong{color:#159947}.dashboard-metric.orange strong{color:#d97706}.dashboard-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.dashboard-section h2{font-size:15px}.dashboard-task{width:100%;border:0;background:#f8fafc;border-radius:10px;padding:9px 10px;margin:4px 0;display:grid;grid-template-columns:auto minmax(0,1fr)auto;gap:8px;align-items:center;text-align:left;color:inherit}.dashboard-task:hover{background:#edf5fb}.dashboard-task strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dashboard-task small{color:var(--muted)}@media(max-width:900px){.dashboard-metrics,.dashboard-grid{grid-template-columns:1fr 1fr}}@media(max-width:760px){.dashboard-hero{display:block}.dashboard-sync{display:inline-block;margin-top:10px}.dashboard-quick{grid-template-columns:1fr}.dashboard-quick span{display:none}.dashboard-metrics,.dashboard-grid{grid-template-columns:1fr}}
+
+/* timeline-web-wide-v2 */
+.timeline-row{grid-template-columns:74px minmax(0,1fr)}
+.timeline-time{flex-direction:column;align-items:flex-end;justify-content:center;line-height:1.35}
+.timeline-time strong{color:#24354b;font-size:12px}
+.timeline-time span{font-size:11px;color:var(--muted)}
+.timeline-card strong{white-space:normal;line-height:1.35;overflow:visible;text-overflow:clip}
+.timeline-card span{white-space:normal;line-height:1.35}
+@media(max-width:760px){.timeline-row{grid-template-columns:52px minmax(0,1fr)}}
