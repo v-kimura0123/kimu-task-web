@@ -108,7 +108,20 @@ function copyText(v,msg){navigator.clipboard.writeText(v).then(()=>toast(msg))}
 function toast(v){const t=$('#toast');t.textContent=v;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
 function closeSidebar(){$('#sidebar').classList.remove('open');$('#scrim').classList.remove('open')}
 $('#menuButton').onclick=()=>{$('#sidebar').classList.add('open');$('#scrim').classList.add('open')};$('#closeSidebar').onclick=closeSidebar;$('#scrim').onclick=closeSidebar;$('#addButton').onclick=()=>openTask(null,page==='idea'?'idea':page==='memo'?'memo':null);$('#importButton').onclick=()=>openImport('import');$('#exportButton').onclick=()=>openImport('export');
-openTask=openTaskV2;renderUtility=renderUtilityV2;
+function openTaskDetail(task){
+ const mac=task._mac||{}, links=mac.relatedLinks||task.relatedLinks||[], subtasks=mac.subtasks||task.subtasks||[], folders=mac.folderPaths||task.folderPaths||[], tags=mac.tags||task.tags||[], reminder=mac.reminderDate||task.reminderDate||mac.reminders?.[0]?.date;
+ const f=$('#taskForm');f.innerHTML=`<div class="detail-head"><div><span class="pill" style="color:${categoryColor(task.category||'memo')}">${esc(task.category||'memo')}</span><span class="pill">${esc(task.status||'未設定')}</span><h2>${esc(task.title)}</h2></div><button value="cancel" class="icon" aria-label="閉じる">×</button></div>
+ <section class="detail-group detail-read"><h3>仕事内容</h3><dl><dt>時間</dt><dd>${task.minutes?`${task.minutes}分`:'未設定'}</dd><dt>作業日</dt><dd>${esc(task.date||'未設定')}</dd>${tags.length?`<dt>タグ</dt><dd>${tags.map(t=>`<span class="pill">${esc(t)}</span>`).join(' ')}</dd>`:''}<dt>メモ</dt><dd class="prewrap">${esc(task.note||'—')}</dd></dl></section>
+ <section class="detail-group detail-read"><h3>情報</h3>${task.image?`<img class="detail-view-image" src="${task.image}" alt="添付画像">`:''}${folders.length?`<h4>フォルダ</h4>${folders.map(v=>`<p class="path-text">${esc(v)}</p>`).join('')}`:''}${links.length?`<h4>関連URL</h4>${links.map(v=>`<p><a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.title||v.url)}</a></p>`).join('')}`:''}${subtasks.length?`<h4>チェックリスト</h4>${subtasks.map(v=>`<p>${v.isDone?'☑':'☐'} ${esc(v.title)}</p>`).join('')}`:''}${!task.image&&!folders.length&&!links.length&&!subtasks.length?'<p class="meta">登録情報はまだないよ</p>':''}</section>
+ <section class="detail-group detail-read"><h3>通知・タスク管理</h3><dl><dt>通知</dt><dd>${reminder?new Date(reminder).toLocaleString('ja-JP'):'なし'}</dd><dt>定期タスク</dt><dd>${esc(mac.taskRecurrence&&mac.taskRecurrence!=='none'?mac.taskRecurrence:'なし')}</dd></dl></section>
+ <section class="detail-actions"><button type="button" id="detailStart" class="secondary">${task.startedAt?'作業中':'今から開始'}</button><button type="button" id="detailDone" class="secondary">${task.done?'未完了へ戻す':'完了'}</button><button type="button" id="detailEdit" class="primary">編集</button></section>`;
+ $('#detailStart').onclick=()=>{const original=state.tasks.find(x=>x.id===task.id);original.startedAt=original.startedAt?null:new Date().toISOString();dirty();$('#taskDialog').close();render();toast(original.startedAt?'作業を開始したよ':'作業中を解除したよ')};
+ $('#detailDone').onclick=()=>{const original=state.tasks.find(x=>x.id===task.id);original.done=!original.done;original.completedAt=original.done?new Date().toISOString():null;dirty();$('#taskDialog').close();render();toast(original.done?'完了にしたよ':'未完了へ戻したよ')};
+ $('#detailEdit').onclick=()=>{const current=state.tasks.find(x=>x.id===task.id);$('#taskDialog').close();openTaskV2(current)};
+ $('#taskDialog').showModal();
+}
+function openTaskRouter(task=null,kind=null){task?openTaskDetail(task):openTaskV2(null,kind)}
+openTask=openTaskRouter;renderUtility=renderUtilityV2;
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js');render();resumeCloud();
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')resumeCloud()});
 window.addEventListener('online',resumeCloud);
