@@ -124,7 +124,7 @@ function openTaskDetail(task){
 }
 function openTaskRouter(task=null,kind=null){task?openTaskDetail(task):openTaskV2(null,kind)}
 openTask=openTaskRouter;renderUtility=renderUtilityV2;
-if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js');render();resumeCloud();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(registration=>registration.update());render();resumeCloud();
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')resumeCloud()});
 window.addEventListener('online',resumeCloud);
 window.addEventListener('focus',resumeCloud);
