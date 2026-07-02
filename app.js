@@ -3,6 +3,7 @@ const today=()=>new Date().toISOString().slice(0,10);
 const uid=()=>crypto.randomUUID?.()||`${Date.now()}-${Math.random()}`;
 const seed={tasks:[],workdays:[],links:[],imageMemos:[],favorites:[],settings:{endTime:'19:00',shareURL:'https://x.gd/hrRag',includeURL:false,compactRows:false,showDates:true,showTimes:true},groups:{schedule:true,progress:true,genre:false,settings:false}};
 let state=load(), page='today';
+state={...structuredClone(seed),...state,tasks:Array.isArray(state?.tasks)?state.tasks:[],workdays:Array.isArray(state?.workdays)?state.workdays:[],links:Array.isArray(state?.links)?state.links:[],imageMemos:Array.isArray(state?.imageMemos)?state.imageMemos:[],favorites:Array.isArray(state?.favorites)?state.favorites:[],settings:{...seed.settings,...(state?.settings||{})},groups:{...seed.groups,...(state?.groups||{})}};
 let cloudClient=null, cloudUser=null;
 let cloudApplying=false, cloudBusy=false;
 const cloudDefaults={url:'https://qlepvmxyinathcicesfv.supabase.co',key:'sb_publishable_PkdyTEB-pvuchkJqm3f7Pw_8GGJK4Au'};
