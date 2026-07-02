@@ -38,3 +38,18 @@
 .calendar-mini-memo{background:#fff7ed;color:#8a4b09}
 .calendar-memo-divider{display:flex;align-items:center;gap:10px;margin:12px 0 8px;color:var(--muted);font-size:12px;font-weight:800}
 .calendar-memo-divider::before,.calendar-memo-divider::after{content:"";height:1px;background:var(--line);flex:1}
+
+/* final-polish-v1 */
+.dashboard-sync{border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.start-panel{background:#fbfdff}
+.risk-list{display:flex;gap:8px;flex-wrap:wrap}
+.risk-card{display:grid;text-align:left;gap:2px;min-width:180px}
+.risk-card strong{font-size:13px;line-height:1.35}
+.risk-card small{font-size:11px;color:var(--muted)}
+.dashboard-task-open strong{display:grid;gap:2px;min-width:0}
+.dashboard-task-open strong small{font-weight:500;color:var(--muted)}
+.sync-overview{background:linear-gradient(135deg,#fff,#f5fbff)}
+.diag-row{display:flex;justify-content:space-between;gap:12px;border-top:1px solid #edf1f6;padding:10px 0}
+.diag-row:first-of-type{border-top:0}
+.diag-row.warn span{color:#a96300}
+.diag-row.danger span{color:#ba3824}
