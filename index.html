@@ -13,8 +13,8 @@
   <title>Kimu Task</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=21">
-  <link rel="stylesheet" href="detail.css?v=21">
+  <link rel="stylesheet" href="styles.css?v=22">
+  <link rel="stylesheet" href="detail.css?v=22">
 </head>
 <body>
   <div id="app">
@@ -28,15 +28,16 @@
       <header class="topbar">
         <button id="menuButton" class="icon mobile-only" aria-label="メニュー">☰</button>
         <div><h1 id="pageTitle">今日</h1><p id="pageSub"></p></div>
-        <div class="top-actions"><button id="importButton" class="secondary desktop-only">シート取込</button><button id="exportButton" class="secondary desktop-only">シートへ戻す</button><button id="addButton" class="primary">＋ 仕事を追加</button></div>
+        <div class="top-actions"><input id="searchBox" class="desktop-only" placeholder="検索"><button id="importButton" class="secondary desktop-only">シート取込</button><button id="exportButton" class="secondary desktop-only">シートへ戻す</button><button id="addButton" class="primary">＋ 仕事を追加</button></div>
       </header>
       <section id="content" class="content"></section>
     </main>
   </div>
+  <nav class="bottom-nav mobile-only"><button data-bottom="today">今日</button><button data-bottom="dailyPlan">整理</button><button data-bottom="sync">同期</button><button data-bottom="add">＋</button></nav>
   <dialog id="taskDialog" class="sheet"><form method="dialog" id="taskForm"></form></dialog>
   <dialog id="importDialog" class="sheet"><form method="dialog" id="importForm"></form></dialog>
   <div id="toast" class="toast"></div>
-  <script type="module" src="app.js?v=21"></script>
-  <script src="sync-refresh.js?v=21"></script>
+  <script type="module" src="app.js?v=22"></script>
+  <script src="sync-refresh.js?v=22"></script>
 </body>
 </html>
