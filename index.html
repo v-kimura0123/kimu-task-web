@@ -10,8 +10,8 @@
   <title>Kimu Task</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=13">
-  <link rel="stylesheet" href="detail.css?v=13">
+  <link rel="stylesheet" href="styles.css?v=14">
+  <link rel="stylesheet" href="detail.css?v=14">
 </head>
 <body>
   <div id="app">
@@ -25,7 +25,7 @@
       <header class="topbar">
         <button id="menuButton" class="icon mobile-only" aria-label="メニュー">☰</button>
         <div><h1 id="pageTitle">今日</h1><p id="pageSub"></p></div>
-        <div class="top-actions"><button id="importButton" class="secondary desktop-only">シート取込</button><button id="exportButton" class="secondary desktop-only">シートへ戻す</button><button id="addButton" class="primary">＋ 追加</button></div>
+        <div class="top-actions"><button id="importButton" class="secondary desktop-only">シート取込</button><button id="exportButton" class="secondary desktop-only">シートへ戻す</button><button id="addButton" class="primary">＋ 仕事を追加</button></div>
       </header>
       <section id="content" class="content"></section>
     </main>
@@ -33,6 +33,7 @@
   <dialog id="taskDialog" class="sheet"><form method="dialog" id="taskForm"></form></dialog>
   <dialog id="importDialog" class="sheet"><form method="dialog" id="importForm"></form></dialog>
   <div id="toast" class="toast"></div>
-  <script type="module" src="app.js?v=13"></script>
+  <script type="module" src="app.js?v=14"></script>
+  <script src="sync-refresh.js?v=14"></script>
 </body>
 </html>
