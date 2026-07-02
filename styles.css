@@ -53,3 +53,10 @@
 .diag-row:first-of-type{border-top:0}
 .diag-row.warn span{color:#a96300}
 .diag-row.danger span{color:#ba3824}
+
+/* final-dashboard-layout-v1 */
+.nav-top .nav-item[data-page="dashboard"]{font-size:16px;font-weight:850;padding:13px 12px;background:#ffffff12;margin-bottom:4px}
+.nav-top .nav-item[data-page="dashboard"] span,.nav-top .nav-item[data-page="dashboard"]::first-letter{font-size:20px}
+.nav-top .nav-item[data-page="dashboard"].active{background:#ffffff24;box-shadow:inset 4px 0 var(--teal)}
+.dashboard-spacer{display:block;min-height:1px}
+@media(max-width:760px){.dashboard-spacer{display:none}}
