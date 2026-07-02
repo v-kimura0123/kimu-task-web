@@ -107,6 +107,8 @@ function restoreBackup(e){const f=e.target.files[0];if(!f)return;const r=new Fil
 function copyText(v,msg){navigator.clipboard.writeText(v).then(()=>toast(msg))}
 function toast(v){const t=$('#toast');t.textContent=v;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
 function closeSidebar(){$('#sidebar').classList.remove('open');$('#scrim').classList.remove('open')}
+const syncButton=document.createElement('button');syncButton.id='syncButton';syncButton.className='secondary';syncButton.textContent='↻ 同期・更新';document.querySelector('.top-actions').prepend(syncButton);
+syncButton.onclick=async()=>{syncButton.disabled=true;syncButton.textContent='↻ 更新中…';try{await resumeCloud();const time=new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});syncButton.textContent=`✓ 更新 ${time}`;toast('最新の内容に更新したよ')}finally{setTimeout(()=>{syncButton.disabled=false;syncButton.textContent='↻ 同期・更新'},2200)}};
 $('#menuButton').onclick=()=>{$('#sidebar').classList.add('open');$('#scrim').classList.add('open')};$('#closeSidebar').onclick=closeSidebar;$('#scrim').onclick=closeSidebar;$('#addButton').onclick=()=>openTask(null,page==='idea'?'idea':page==='memo'?'memo':null);$('#importButton').onclick=()=>openImport('import');$('#exportButton').onclick=()=>openImport('export');
 function openTaskDetail(task){
  const mac=task._mac||{}, links=mac.relatedLinks||task.relatedLinks||[], subtasks=mac.subtasks||task.subtasks||[], folders=mac.folderPaths||task.folderPaths||[], tags=mac.tags||task.tags||[], reminder=mac.reminderDate||task.reminderDate||mac.reminders?.[0]?.date;
