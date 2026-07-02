@@ -1,5 +1,5 @@
-const CACHE = 'kimu-task-v7';
-const FILES = ['./','index.html','styles.css?v=7','app.js?v=7','manifest.webmanifest','icon-192.png','icon-512.png'];
+const CACHE = 'kimu-task-v9';
+const FILES = ['./','index.html','styles.css?v=9','detail.css?v=9','app.js?v=9','manifest.webmanifest','icon-192.png','icon-512.png'];
 self.addEventListener('install', event => { self.skipWaiting(); event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES))); });
 self.addEventListener('activate', event => event.waitUntil(Promise.all([self.clients.claim(),caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))])));
 self.addEventListener('fetch', event => event.respondWith(caches.match(event.request).then(hit => hit || fetch(event.request).then(response => { const copy=response.clone(); caches.open(CACHE).then(c=>c.put(event.request,copy)); return response; }).catch(()=>caches.match('./index.html')))));
