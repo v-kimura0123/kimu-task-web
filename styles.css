@@ -32,3 +32,9 @@
 .timeline-columns .timeline-card strong{white-space:normal;line-height:1.35;overflow:visible;text-overflow:clip;word-break:break-word}
 .timeline-columns .timeline-card span{white-space:normal;line-height:1.35}
 @media(max-width:980px){.timeline-columns{grid-template-columns:1fr}.timeline-head{display:block}.timeline-head>.meta{display:block;margin-top:8px}}
+
+/* calendar-memo-split-v1 */
+.calendar-mini-divider{display:block;border-top:1px dashed var(--line);margin:3px 0 1px}
+.calendar-mini-memo{background:#fff7ed;color:#8a4b09}
+.calendar-memo-divider{display:flex;align-items:center;gap:10px;margin:12px 0 8px;color:var(--muted);font-size:12px;font-weight:800}
+.calendar-memo-divider::before,.calendar-memo-divider::after{content:"";height:1px;background:var(--line);flex:1}
