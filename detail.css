@@ -1,0 +1,18 @@
+.sheet { width: min(820px, 94vw); max-height: 92vh; }
+.sheet form { max-height: 88vh; overflow: auto; }
+.detail-group { margin: 14px 0; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: #f9fbfd; }
+.detail-group > h3 { margin: 0 0 14px; color: var(--navy); font-size: 17px; }
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.switch-row { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 12px; }
+.switch-row label { display: flex; align-items: center; gap: 7px; }
+.preset-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+.time-preset { border: 1px solid var(--line); border-radius: 7px; background: white; padding: 4px 8px; }
+.detail-preview { display: block; max-width: 180px; max-height: 120px; object-fit: cover; border-radius: 8px; margin: 6px 0; }
+.compact .task { padding: 7px 12px; }
+.warning { color: #9a5a00; background: #fff4d6; padding: 10px; border-radius: 8px; }
+@media (max-width: 640px) {
+  .field-grid { grid-template-columns: 1fr; }
+  .detail-group { padding: 12px; }
+  .sheet { width: 96vw; }
+  .sheet form { max-height: 90vh; }
+}
