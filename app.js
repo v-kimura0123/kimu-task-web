@@ -2,8 +2,9 @@ const KEY='kimu-task-web-v1';
 const today=()=>new Date().toISOString().slice(0,10);
 const uid=()=>crypto.randomUUID?.()||`${Date.now()}-${Math.random()}`;
 const seed={tasks:[],workdays:[],links:[],imageMemos:[],favorites:[],settings:{endTime:'19:00',shareURL:'https://x.gd/hrRag',includeURL:false,compactRows:false,showDates:true,showTimes:true},groups:{schedule:true,progress:true,genre:false,settings:false}};
+const clone=value=>JSON.parse(JSON.stringify(value));
 let state=load(), page='today';
-state={...structuredClone(seed),...state,tasks:Array.isArray(state?.tasks)?state.tasks:[],workdays:Array.isArray(state?.workdays)?state.workdays:[],links:Array.isArray(state?.links)?state.links:[],imageMemos:Array.isArray(state?.imageMemos)?state.imageMemos:[],favorites:Array.isArray(state?.favorites)?state.favorites:[],settings:{...seed.settings,...(state?.settings||{})},groups:{...seed.groups,...(state?.groups||{})}};
+state={...clone(seed),...state,tasks:Array.isArray(state?.tasks)?state.tasks:[],workdays:Array.isArray(state?.workdays)?state.workdays:[],links:Array.isArray(state?.links)?state.links:[],imageMemos:Array.isArray(state?.imageMemos)?state.imageMemos:[],favorites:Array.isArray(state?.favorites)?state.favorites:[],settings:{...seed.settings,...(state?.settings||{})},groups:{...seed.groups,...(state?.groups||{})}};
 let cloudClient=null, cloudUser=null;
 let cloudApplying=false, cloudBusy=false;
 const cloudDefaults={url:'https://qlepvmxyinathcicesfv.supabase.co',key:'sb_publishable_PkdyTEB-pvuchkJqm3f7Pw_8GGJK4Au'};
@@ -11,7 +12,7 @@ let cloudConfig={...cloudDefaults,...JSON.parse(localStorage.getItem('kimu-cloud
 const deviceID=localStorage.getItem('kimu-device-id')||uid();
 localStorage.setItem('kimu-device-id',deviceID);
 const $=s=>document.querySelector(s), content=$('#content');
-function load(){try{return {...structuredClone(seed),...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch{return structuredClone(seed)}}
+function load(){try{return {...clone(seed),...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch{return clone(seed)}}
 function save(){localStorage.setItem(KEY,JSON.stringify(state));$('#saveState').textContent=cloudUser?'● 端末に保存・同期待ち':'● 保存済み'}
 function dirty(){
  localStorage.setItem('kimu-local-updated-at',new Date().toISOString());
@@ -69,7 +70,7 @@ function renderUtility(){
 }
 const toLocalInput=v=>{if(!v)return'';const d=new Date(v);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)};
 function openTask(task=null,kind=null){
- const source=task?structuredClone(task):{id:uid(),title:'',category:kind?'memo':'作業・雑務',status:kind==='idea'?'思いつき':kind==='memo'?'仕事メモ':'早め',date:today(),minutes:'',note:'',kind};
+ const source=task?clone(task):{id:uid(),title:'',category:kind?'memo':'作業・雑務',status:kind==='idea'?'思いつき':kind==='memo'?'仕事メモ':'早め',date:today(),minutes:'',note:'',kind};
  const mac=source._mac||{}, links=mac.relatedLinks||source.relatedLinks||[], subtasks=mac.subtasks||source.subtasks||[], tags=mac.tags||source.tags||[];
  const f=$('#taskForm'), categoryOptions=[...new Set(['情マ','ママフリ','オシゴト','ママ本','とちポチ','印刷物','ジョブWEB','ウェブ','sns','伝ページ','イラスト','動画','照らし合わせ','作業・雑務','修正','その他','依頼中',...categories(),source.category].filter(Boolean))];
  f.innerHTML=`<h2>${task?'仕事内容を編集':'新しく追加'}</h2>
@@ -90,9 +91,9 @@ const dayFromISO=d=>d?String(d).slice(0,10):'';
 function taskToMac(t){return {...(t._mac||{}),id:t.id,category:t.category||'作業・雑務',title:t.title||'',minutes:t.minutes??null,timeLabel:t.timeLabel??null,status:t.done?'完了':(t.status||'早め'),isDone:!!t.done,taskDate:isoDate(t.date),createdAt:t.createdAt||new Date().toISOString(),note:t.note||'',isIdea:t.kind==='idea',isWorkMemo:t.kind==='memo',isPinned:!!t.pinned,startedAt:t.startedAt||null,completedAt:t.completedAt||null,archivedAt:t.archivedAt||null,excludeFromSheet:!!t.excludeFromSheet}}
 function taskFromMac(t){return {...t._web,id:t.id||uid(),title:t.title||'',category:t.category||'作業・雑務',minutes:t.minutes??null,timeLabel:t.timeLabel??null,status:t.isDone?'完了':(t.status||'早め'),done:!!t.isDone,date:dayFromISO(t.taskDate||t.sheetBatchDate),note:t.note||'',kind:t.isIdea?'idea':t.isWorkMemo?'memo':null,pinned:!!t.isPinned,startedAt:t.startedAt||null,completedAt:t.completedAt||null,archivedAt:t.archivedAt||null,excludeFromSheet:!!t.excludeFromSheet,_mac:t}}
 function stateToBackup(){const active=state.tasks.filter(t=>!t.deletedAt),deleted=state.tasks.filter(t=>t.deletedAt);return {tasks:active.map(taskToMac),categories:[...new Set(active.map(t=>t.category).filter(Boolean))],templates:state.favorites||[],trash:deleted.map(t=>({task:taskToMac(t),deletedAt:t.deletedAt})),workdays:(state.workdays||[]).map(w=>({...w,date:isoDate(w.date),clockIn:w.clockIn?isoDate(`${w.date}T${w.clockIn}:00`):null,clockOut:w.clockOut?isoDate(`${w.date}T${w.clockOut}:00`):null})),quickLaunchItems:[],favoriteLinks:(state.links||[]),imageMemos:[]}}
-function backupToState(b){const incoming=(b.tasks||[]).map(taskFromMac);for(const d of b.trash||[]){const t=taskFromMac(d.task);t.deletedAt=d.deletedAt;incoming.push(t)}return {...structuredClone(seed),...state,tasks:incoming,workdays:(b.workdays||[]).map(w=>({...w,date:dayFromISO(w.date),clockIn:w.clockIn?new Date(w.clockIn).toTimeString().slice(0,5):'',clockOut:w.clockOut?new Date(w.clockOut).toTimeString().slice(0,5):''})),links:b.favoriteLinks||state.links||[],favorites:b.templates||state.favorites||[]}}
+function backupToState(b){const incoming=(b.tasks||[]).map(taskFromMac);for(const d of b.trash||[]){const t=taskFromMac(d.task);t.deletedAt=d.deletedAt;incoming.push(t)}return {...clone(seed),...state,tasks:incoming,workdays:(b.workdays||[]).map(w=>({...w,date:dayFromISO(w.date),clockIn:w.clockIn?new Date(w.clockIn).toTimeString().slice(0,5):'',clockOut:w.clockOut?new Date(w.clockOut).toTimeString().slice(0,5):''})),links:b.favoriteLinks||state.links||[],favorites:b.templates||state.favorites||[]}}
 function cloudEnvelope(){return {schemaVersion:2,updatedAt:new Date().toISOString(),deviceID,source:'web',backup:stateToBackup(),webState:state}}
-function applyCloudPayload(payload){if(payload?.schemaVersion===2){state=payload.webState?{...structuredClone(seed),...payload.webState}:backupToState(payload.backup||{})}else state={...structuredClone(seed),...(payload||{})}}
+function applyCloudPayload(payload){if(payload?.schemaVersion===2){state=payload.webState?{...clone(seed),...payload.webState}:backupToState(payload.backup||{})}else state={...clone(seed),...(payload||{})}}
 async function ensureCloudClient(){if(cloudClient)return;const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2');cloudClient=createClient(cloudConfig.url,cloudConfig.key);const {data}=await cloudClient.auth.getSession();cloudUser=data.session?.user||null}
 async function connectCloud(){const status=$('#cloudStatus');try{cloudConfig={url:$('#cloudURL').value.trim(),key:$('#cloudKey').value.trim(),email:$('#cloudEmail').value.trim()};localStorage.setItem('kimu-cloud-config',JSON.stringify(cloudConfig));status.textContent='接続中…';cloudClient=null;await ensureCloudClient();const {data,error}=await cloudClient.auth.signInWithPassword({email:cloudConfig.email,password:$('#cloudPassword').value});if(error)throw error;cloudUser=data.user;toast('Supabaseへ接続したよ');await pullCloudState(true);renderUtility()}catch(e){status.textContent='接続できなかったよ：'+e.message}}
 async function pushCloudState(silent=false){if(!cloudClient||!cloudUser||cloudBusy)return;cloudBusy=true;const status=$('#cloudStatus');if(status)status.textContent='保存中…';const now=new Date().toISOString();const {error}=await cloudClient.from('kimu_snapshots').upsert({user_id:cloudUser.id,payload:cloudEnvelope(),client_updated_at:now},{onConflict:'user_id'});cloudBusy=false;if(error){if(status)status.textContent='保存できなかったよ：'+error.message;return}localStorage.setItem('kimu-last-cloud-sync',now);localStorage.setItem('kimu-local-updated-at',now);$('#saveState').textContent='● クラウド同期済み';if(status)status.textContent='クラウド同期済み：'+new Date(now).toLocaleString('ja-JP');if(!silent)toast('クラウドへ保存したよ')}
