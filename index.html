@@ -49,16 +49,9 @@
       } catch (error) {
         console.warn('Kimu Task cache reset skipped', error);
       }
-
       const script = document.createElement('script');
       script.type = 'module';
-      script.src = 'app-v45.js?v=cache-reset-20260703b-' + Date.now();
-      script.onerror = function () {
-        const content = document.getElementById('content');
-        if (content) {
-          content.innerHTML = '<section class="panel"><h2>読み込みに失敗したよ</h2><p class="meta">キャッシュを消してから、もう一度開き直してみてね。</p></section>';
-        }
-      };
+      script.src = 'app-lite.js?v=lite-20260703-' + Date.now();
       document.body.appendChild(script);
     })();
   </script>
