@@ -8,11 +8,7 @@ state={...clone(seed),...state,tasks:Array.isArray(state?.tasks)?state.tasks.fil
 let cloudClient=null, cloudUser=null;
 let cloudApplying=false, cloudBusy=false;
 const cloudDefaults={url:'https://qlepvmxyinathcicesfv.supabase.co',key:'sb_publishable_PkdyTEB-pvuchkJqm3f7Pw_8GGJK4Au'};
-function safeLocalJSON(key,fallback={}){
- try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}
- catch(e){try{localStorage.removeItem(key)}catch{};return fallback}
-}
-let cloudConfig={...cloudDefaults,...safeLocalJSON('kimu-cloud-config',{})};
+let cloudConfig={...cloudDefaults,...JSON.parse(localStorage.getItem('kimu-cloud-config')||'{}')};
 const deviceID=localStorage.getItem('kimu-device-id')||uid();
 localStorage.setItem('kimu-device-id',deviceID);
 const deviceSource=/iPhone|iPad|iPod/i.test(navigator.userAgent)?'iphone':'web';
