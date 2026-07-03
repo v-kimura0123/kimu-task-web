@@ -164,6 +164,22 @@
   white-space:pre-wrap;
   writing-mode:horizontal-tb;
 }
+.memo-edit{
+  grid-template-columns:minmax(0,1fr) auto auto;
+  align-items:center;
+  gap:12px;
+}
+.memo-edit .lite-main{
+  grid-column:1;
+}
+.memo-edit h3{
+  margin-bottom:5px;
+}
+.memo-edit .secondary,
+.memo-edit .danger{
+  align-self:center;
+  white-space:nowrap;
+}
 @media(max-width:760px){
   .lite-task{
     grid-template-columns:26px minmax(0,1fr);
@@ -172,4 +188,12 @@
   }
   .lite-task .secondary,
   .lite-task .danger{grid-column:2}
+  .memo-edit{
+    grid-template-columns:minmax(0,1fr);
+  }
+  .memo-edit .secondary,
+  .memo-edit .danger{
+    grid-column:1;
+    width:100%;
+  }
 }
