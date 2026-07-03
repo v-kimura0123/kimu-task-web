@@ -1,7 +1,7 @@
 const KEY='kimu-task-web-v1';
 const today=()=>new Date().toISOString().slice(0,10);
 const uid=()=>crypto.randomUUID?.()||`${Date.now()}-${Math.random()}`;
-const seed={tasks:[],workdays:[],links:[],imageMemos:[],favorites:[],settings:{endTime:'19:00',shareURL:'https://x.gd/hrRag',includeURL:false,compactRows:false,showDates:true,showTimes:true},groups:{schedule:true,progress:true,genre:false,settings:false}};
+const seed={tasks:[],workdays:[],links:[],imageMemos:[],favorites:[],settings:{endTime:'19:00',shareURL:'https://x.gd/hrRag',includeURL:false,hideEmptyLineGroups:true,compactRows:false,showDates:true,showTimes:true},groups:{schedule:true,progress:true,genre:false,settings:false}};
 const clone=value=>JSON.parse(JSON.stringify(value));
 let state=load(), page='dashboard';
 state={...clone(seed),...state,tasks:Array.isArray(state?.tasks)?state.tasks:[],workdays:Array.isArray(state?.workdays)?state.workdays:[],links:Array.isArray(state?.links)?state.links:[],imageMemos:Array.isArray(state?.imageMemos)?state.imageMemos:[],favorites:Array.isArray(state?.favorites)?state.favorites:[],settings:{...seed.settings,...(state?.settings||{})},groups:{...seed.groups,...(state?.groups||{})}};
@@ -266,3 +266,37 @@ function renderAttendance(){
 render();
 /* KIMU_WEB_REVIEW_ATTENDANCE_PATCH_END */
 
+
+
+/* KIMU_LINE_FORMAT_PATCH_START */
+function renderLine(){
+ const s=state.settings;
+ if(s.hideEmptyLineGroups===undefined)s.hideEmptyLineGroups=true;
+ content.innerHTML=`<section class="panel"><div class="row spread"><h2>LINE用 今日の仕事</h2><button class="primary" id="copyLine">コピー</button></div><div class="row"><label>終了時間 <input id="endTime" type="time" value="${esc(s.endTime||'19:00')}"></label><label><input id="hideEmptyLineGroups" type="checkbox" ${s.hideEmptyLineGroups!==false?'checked':''}> 空の項目を非表示</label><label><input id="includeURL" type="checkbox" ${s.includeURL?'checked':''}> リンクを付ける</label><input id="shareURL" value="${esc(s.shareURL||'')}" style="flex:1" ${s.includeURL?'':'disabled'}></div><textarea id="lineOutput" class="editor line-output">${esc(makeLine())}</textarea></section>`;
+ const refresh=()=>{s.endTime=$('#endTime').value||'19:00';s.hideEmptyLineGroups=$('#hideEmptyLineGroups').checked;s.includeURL=$('#includeURL').checked;s.shareURL=$('#shareURL').value;$('#shareURL').disabled=!s.includeURL;$('#lineOutput').value=makeLine();dirty()};
+ ['endTime','hideEmptyLineGroups','includeURL','shareURL'].forEach(id=>$('#'+id).onchange=refresh);
+ $('#copyLine').onclick=()=>copyText($('#lineOutput').value,'LINE用文面をコピーしたよ');
+}
+function makeLine(){
+ if(state.settings.hideEmptyLineGroups===undefined)state.settings.hideEmptyLineGroups=true;
+ const groups=[['絶対今日','★絶対今日'],['早め','早め'],['今日やりたいこと','できればやる']];
+ const end=String(state.settings.endTime||'19:00').trim();
+ const itemsFor=status=>activeTasks().filter(t=>!t.done&&!isMemoTask(t)&&t.date===today()&&t.status===status).sort((a,b)=>(a.order||0)-(b.order||0)).map(t=>'●'+t.title);
+ const blocks=[];
+ for(const [heading,status] of groups){
+   const rows=itemsFor(status);
+   if(!rows.length&&state.settings.hideEmptyLineGroups!==false)continue;
+   const lines=[`【${heading}】`,...(rows.length?rows:['（なし）'])];
+   if(end)lines.push(`（${end}）`);
+   blocks.push(lines.join('\n'));
+ }
+ if(!blocks.length){
+   const lines=['【今日の仕事】','（なし）'];
+   if(end)lines.push(`（${end}）`);
+   blocks.push(lines.join('\n'));
+ }
+ if(state.settings.includeURL&&state.settings.shareURL)blocks.push(state.settings.shareURL);
+ return blocks.join('\n\n');
+}
+if(page==='line')renderLine();
+/* KIMU_LINE_FORMAT_PATCH_END */
