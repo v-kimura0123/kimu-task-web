@@ -59,9 +59,9 @@ function renderNav(){
 
 function cardTask(t,{memo=false}={}){
   const d=dateOnly(t.taskDate||t.sheetBatchDate);
-  return `<article class="task readonly-task" data-id="${t.id}">
+  return `<article class="lite-task readonly-task" data-id="${t.id}">
     <span class="check ${t.isDone?'done':''}">${t.isDone?'✓':''}</span>
-    <div class="task-main">
+    <div class="lite-main">
       <h3>${esc(t.title)}</h3>
       <div class="meta"><span class="pill">${esc(t.category||'')}</span><span class="pill">${esc(statusText(t))}</span>${d?`<span>${esc(d)}</span>`:''}${t.minutes?`<span>${t.minutes}分</span>`:''}</div>
       ${memo&&t.note?`<p class="memo-preview">${esc(t.note)}</p>`:''}
@@ -98,7 +98,7 @@ function renderMemo(kind){
   const tasks=activeTasks().filter(isIdeaKind?isIdea:isMemo).sort(memoSort);
   setTitle(title,'追加・編集OK');
   $('#content').innerHTML=`<section class="panel"><h2>${title}へ追加</h2><div class="field"><label>内容</label><input id="memoTitle" placeholder="${title}に入れる内容"></div><div class="field"><label>メモ</label><textarea id="memoNote" placeholder="補足があれば"></textarea></div><button id="memoAdd" class="primary">追加してMacへ送る</button></section>
-  <div class="task-list">${tasks.map(t=>`<article class="task memo-edit" data-id="${t.id}"><div class="task-main"><h3>${esc(t.title)}</h3><p class="memo-preview">${esc(t.note||'')}</p><div class="meta"><span>${dateOnly(t.taskDate||t.createdAt)||''}</span></div></div><button class="secondary editMemo">編集</button><button class="danger deleteMemo">削除</button></article>`).join('')||'<div class="empty">まだないよ</div>'}</div>`;
+  <div class="task-list">${tasks.map(t=>`<article class="lite-task memo-edit" data-id="${t.id}"><div class="lite-main"><h3>${esc(t.title)}</h3><p class="memo-preview">${esc(t.note||'')}</p><div class="meta"><span>${dateOnly(t.taskDate||t.createdAt)||''}</span></div></div><button class="secondary editMemo">編集</button><button class="danger deleteMemo">削除</button></article>`).join('')||'<div class="empty">まだないよ</div>'}</div>`;
   $('#memoAdd').onclick=()=>addMemo(kind);
   document.querySelectorAll('.editMemo').forEach(b=>b.onclick=e=>openMemoEditor(e.target.closest('[data-id]').dataset.id,kind));
   document.querySelectorAll('.deleteMemo').forEach(b=>b.onclick=e=>deleteMemo(e.target.closest('[data-id]').dataset.id));

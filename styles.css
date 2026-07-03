@@ -86,3 +86,84 @@
 .workday-row label{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px;align-items:center;font-size:12px;color:var(--muted)}
 .workday-row input{border:1px solid var(--line);border-radius:8px;padding:7px;background:#fbfcfe}
 @media(max-width:760px){.attendance-current{grid-template-columns:1fr}.workday-row{grid-template-columns:1fr 1fr}.workday-row strong{grid-column:1/-1}.workday-row label{grid-column:1/-1}.workday-row button{padding:8px 9px}}
+
+/* web-lite-card-layout-v1 */
+.task-list .lite-task{
+  display:grid;
+  grid-template-columns:28px minmax(0,1fr) auto auto;
+  align-items:center;
+  gap:12px;
+  padding:14px 16px;
+  border-bottom:1px solid #edf1f6;
+  background:#fff;
+  min-height:0;
+}
+.task-list .lite-task:last-child{border-bottom:0}
+.task-list .lite-task:hover{background:#f8fafc}
+.lite-task .check{
+  width:20px;
+  height:20px;
+  border:1.5px solid #9aa7b6;
+  border-radius:50%;
+  background:#fff;
+  display:inline-grid;
+  place-items:center;
+  padding:0;
+  font-size:12px;
+  line-height:1;
+  flex:0 0 auto;
+}
+.lite-task .check.done{background:var(--teal);border-color:var(--teal);color:#fff}
+.lite-task .lite-main{
+  display:block;
+  min-width:0;
+  width:100%;
+  writing-mode:horizontal-tb;
+}
+.lite-task h3{
+  display:block;
+  margin:0 0 7px;
+  max-width:none;
+  font-size:15px;
+  line-height:1.45;
+  white-space:normal;
+  word-break:normal;
+  overflow-wrap:anywhere;
+  writing-mode:horizontal-tb;
+}
+.lite-task .meta{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:6px;
+  color:var(--muted);
+  font-size:11px;
+  writing-mode:horizontal-tb;
+}
+.lite-task .pill,
+.lite-task .meta span{
+  display:inline-flex;
+  align-items:center;
+  width:auto;
+  max-width:100%;
+  white-space:nowrap;
+  writing-mode:horizontal-tb;
+  line-height:1.2;
+}
+.lite-task .memo-preview{
+  margin:6px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+  white-space:pre-wrap;
+  writing-mode:horizontal-tb;
+}
+@media(max-width:760px){
+  .task-list .lite-task{
+    grid-template-columns:26px minmax(0,1fr);
+    align-items:start;
+    padding:13px 12px;
+  }
+  .lite-task .secondary,
+  .lite-task .danger{grid-column:2}
+}
