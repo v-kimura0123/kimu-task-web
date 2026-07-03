@@ -46,11 +46,11 @@ function dirty(){
  $('#saveState').textContent='○ 保存中';updateSyncMeta();clearTimeout(dirty.t);dirty.t=setTimeout(()=>{save();scheduleCloudPush()},180)
 }
 function scheduleCloudPush(){if(cloudApplying)return;if(!cloudUser){ensureCloudClient().then(()=>{if(cloudUser&&cloudDirty)scheduleCloudPush()}).catch(()=>{});return}clearTimeout(scheduleCloudPush.t);scheduleCloudPush.t=setTimeout(()=>pushCloudState(true),450)}
-const statusInfo={urgent:['★絶対今日','絶対今日'],early:['早め','早め'],mid:['できればやる','中期'],long:['いつかやる','長期'],wait:['まち','まち'],hold:['一時保留','一時保留'],done:['完了','完了']};
+const statusInfo={urgent:['★絶対今日','絶対今日'],early:['早め','早め'],mid:['できればやる','中期'],long:['いつかやる','長期'],wait:['まち','まち'],hold:['一時保留','一時保留'],appOnly:['アプリ専用','アプリ専用'],done:['完了','完了']};
 const navGroups=[
  {id:'memo',title:'メモ',fixed:true,items:[['idea','💡','思いつきBOX','idea'],['memo','📝','仕事メモ','memo'],['imageMemo','🖼','画像メモ','image'],['links','🔗','よく使うリンク集'],['macOnly','⌘','Macショートカット']]},
  {id:'schedule',title:'予定管理',items:[['working','▶','いま作業中'],['timeline','◷','タイムライン'],['calendar','▣','カレンダー'],['notifications','🔔','通知一覧'],['attendance','◉','出退勤管理'],['review','▥','今日の振り返り'],['tomorrow','☀','次の日以降'],['dailyPlan','🌅','朝・夕方の整理'],['line','💬','LINE用 今日の仕事']]},
- {id:'progress',title:'進行状況',items:[['all','☷','すべて'],['today','☀','今日'],['mid','▣','中期'],['long','◴','長期'],['wait','Ⅱ','まち'],['recurring','↻','毎日・定期'],['done','✓','完了'],['hold','□','一時保留']]},
+ {id:'progress',title:'進行状況',items:[['all','☷','すべて'],['today','☀','今日'],['mid','▣','中期'],['long','◴','長期'],['wait','Ⅱ','まち'],['recurring','↻','毎日・定期'],['done','✓','完了'],['hold','□','一時保留'],['appOnly','⊘','アプリ専用']]},
  {id:'genre',title:'ジャンル',items:[['genres','▤','すべて']]},
  {id:'settings',title:'設定',items:[['favorites','☆','よく使う仕事'],['archive','▣','アーカイブ'],['trash','♲','ゴミ箱'],['sync','↻','同期設定'],['backup','⇩','バックアップ'],['display','☷','表示設定'],['legend','🎨','色の凡例'],['diagnostics','♡','診断'],['webApp','🌐','WEBアプリ']]}
 ];
@@ -85,8 +85,8 @@ function workdayFor(date){return normalizeWorkdays(state.workdays||[]).find(w=>w
 function workdayText(w){return w?`出勤 ${w.clockIn||'--:--'} ／ 退勤 ${w.clockOut||'勤務中'}`:'出退勤未登録'}
 function taskCopyText(t){return [t.title,t.note].filter(Boolean).join('\n')}
 state.workdays=normalizeWorkdays(state.workdays);
-function tasksForPage(){let a=activeTasks(); if(page==='idea')return a.filter(t=>t.kind==='idea'||t.category==='思いつき'||t.status==='思いつき');if(page==='memo')return a.filter(t=>t.kind==='memo'||t.category==='memo'||t.status==='仕事メモ');a=a.filter(t=>!isMemoTask(t));if(page==='today')return a.filter(t=>['★絶対今日','早め'].includes(t.status)&&isDate(t,today()));if(page==='mid')return a.filter(t=>t.status==='できればやる');if(page==='long')return a.filter(t=>t.status==='いつかやる');if(page==='wait')return a.filter(t=>t.status==='まち');if(page==='recurring')return a.filter(t=>t.status==='毎日・定期');if(page==='hold')return a.filter(t=>t.status==='一時保留');if(page==='done')return state.tasks.filter(t=>t.done&&!t.deletedAt&&!t.archivedAt&&!isMemoTask(t));if(page==='tomorrow'){const d=new Date();d.setDate(d.getDate()+1);return a.filter(t=>isDate(t,d.toISOString().slice(0,10)))}if(page.startsWith('cat:'))return a.filter(t=>t.category===page.slice(4));if(page==='working')return a.filter(t=>t.startedAt);if(page==='pickup')return a.filter(t=>t.pinned||t.reminder);return a}
-function render(){try{renderNav();const titles={dashboard:'ダッシュボード',pickup:'ピックアップ',idea:'思いつきBOX',memo:'仕事メモ',imageMemo:'画像メモ',links:'よく使うリンク集',macOnly:'Macショートカット',all:'進行状況：すべて',today:'今日',mid:'中期',long:'長期',wait:'まち',recurring:'毎日・定期',hold:'一時保留',done:'完了',working:'いま作業中',timeline:'タイムライン',calendar:'カレンダー',notifications:'通知一覧',attendance:'出退勤管理',review:'今日の振り返り',tomorrow:'次の日以降',dailyPlan:'朝・夕方の整理',line:'LINE用 今日の仕事',genres:'ジャンル：すべて',favorites:'よく使う仕事',archive:'アーカイブ',sync:'同期設定',backup:'バックアップ',trash:'ゴミ箱',display:'表示設定',legend:'色の凡例',diagnostics:'診断',webApp:'WEBアプリ'};$('#pageTitle').textContent=page.startsWith('cat:')?page.slice(4):(titles[page]||'Kimu Task');$('#pageSub').textContent=new Intl.DateTimeFormat('ja-JP',{month:'long',day:'numeric',weekday:'short'}).format(new Date());
+function tasksForPage(){let a=activeTasks(); if(page==='idea')return a.filter(t=>t.kind==='idea'||t.category==='思いつき'||t.status==='思いつき');if(page==='memo')return a.filter(t=>t.kind==='memo'||t.category==='memo'||t.status==='仕事メモ');a=a.filter(t=>!isMemoTask(t));if(page==='today')return a.filter(t=>['★絶対今日','早め'].includes(t.status)&&isDate(t,today()));if(page==='mid')return a.filter(t=>t.status==='できればやる');if(page==='long')return a.filter(t=>t.status==='いつかやる');if(page==='wait')return a.filter(t=>t.status==='まち');if(page==='recurring')return a.filter(t=>t.status==='毎日・定期');if(page==='hold')return a.filter(t=>t.status==='一時保留');if(page==='appOnly')return a.filter(t=>t.excludeFromSheet);if(page==='done')return state.tasks.filter(t=>t.done&&!t.deletedAt&&!t.archivedAt&&!isMemoTask(t));if(page==='tomorrow'){const d=new Date();d.setDate(d.getDate()+1);return a.filter(t=>isDate(t,d.toISOString().slice(0,10)))}if(page.startsWith('cat:'))return a.filter(t=>t.category===page.slice(4));if(page==='working')return a.filter(t=>t.startedAt);if(page==='pickup')return a.filter(t=>t.pinned||t.reminder);return a}
+function render(){try{renderNav();const titles={dashboard:'ダッシュボード',pickup:'ピックアップ',idea:'思いつきBOX',memo:'仕事メモ',imageMemo:'画像メモ',links:'よく使うリンク集',macOnly:'Macショートカット',all:'進行状況：すべて',today:'今日',mid:'中期',long:'長期',wait:'まち',recurring:'毎日・定期',hold:'一時保留',appOnly:'アプリ専用',done:'完了',working:'いま作業中',timeline:'タイムライン',calendar:'カレンダー',notifications:'通知一覧',attendance:'出退勤管理',review:'今日の振り返り',tomorrow:'次の日以降',dailyPlan:'朝・夕方の整理',line:'LINE用 今日の仕事',genres:'ジャンル：すべて',favorites:'よく使う仕事',archive:'アーカイブ',sync:'同期設定',backup:'バックアップ',trash:'ゴミ箱',display:'表示設定',legend:'色の凡例',diagnostics:'診断',webApp:'WEBアプリ'};$('#pageTitle').textContent=page.startsWith('cat:')?page.slice(4):(titles[page]||'Kimu Task');$('#pageSub').textContent=new Intl.DateTimeFormat('ja-JP',{month:'long',day:'numeric',weekday:'short'}).format(new Date());
  document.body.classList.toggle('compact',!!state.settings.compactRows);if(page==='dashboard')return renderDashboard();if(page==='attendance')return renderAttendance();if(page==='line')return renderLine();if(page==='imageMemo')return renderImageMemos();if(page==='links')return renderLinks();if(page==='review')return renderReview();if(page==='calendar')return renderCalendar();if(page==='timeline')return renderTimeline();if(page==='dailyPlan')return renderDailyPlan();if(['backup','sync','favorites','notifications','trash','archive','display','legend','diagnostics','macOnly','webApp'].includes(page))return renderUtility();renderTasks();}catch(e){console.error(e);const nav=$('#nav');if(nav&&!nav.innerHTML.trim())nav.innerHTML='<div class="nav-top"><button class="nav-item active" data-page="dashboard">▦ ダッシュボード</button><button class="nav-item" data-page="sync">↻ 同期設定</button></div>';content.innerHTML=`<section class="panel"><h2>読み込みで止まったよ</h2><p class="meta">データを守るため、画面だけ安全モードで表示しているよ。同期・更新かスーパーリロードを試してね。</p><pre class="meta">${esc(e.message||e)}</pre></section>`;document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{page=b.dataset.page;render()})}}
 function renderDashboard(){const now=today(),tom=(()=>{const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().slice(0,10)})(),active=workTasks(),todayItems=active.filter(t=>t.date===now||(!t.date&&t.status==='★絶対今日')),doneToday=state.tasks.filter(isDoneToday),risk=active.filter(t=>t.status==='★絶対今日'||t.pinned||t.reminder||t.reminderDate).slice(0,6),ideaMemos=activeTasks().filter(isIdeaTask).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,6),workMemos=activeTasks().filter(isWorkMemoTask).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,6),total=todayItems.reduce((a,t)=>a+(+t.minutes||0),0),last=localStorage.getItem('kimu-last-cloud-sync'),source=sourceLabel(localStorage.getItem('kimu-last-cloud-source'));const card=(title,value,cap,cls='')=>`<div class="dashboard-metric ${cls}"><small>${title}</small><strong>${value}</strong><span>${cap}</span></div>`,section=(title,icon,items,copyable=false)=>`<section class="panel dashboard-section"><h2>${icon} ${title}</h2>${items.length?items.map(t=>`<div class="dashboard-task-line" data-id="${t.id}"><button class="dashboard-task-open" data-id="${t.id}"><span style="color:${categoryColor(t.category||'memo')}">●</span><strong>${esc(t.title)}</strong>${t.minutes?`<small>${t.minutes}分</small>`:''}</button>${copyable?`<button class="secondary dashboard-copy" data-id="${t.id}">コピー</button>`:''}</div>`).join(''):'<p class="meta">今はなし</p>'}</section>`;content.innerHTML=`<section class="panel dashboard-hero"><div><h2>今日を、ちょうどよく。</h2><p class="meta">${new Intl.DateTimeFormat('ja-JP',{month:'long',day:'numeric',weekday:'short'}).format(new Date())}</p></div><div class="dashboard-sync">${last?`最終同期：${source} ${shortTime(last)}`:(cloudUser?'同期待ち':'この端末に保存')}</div></section><section class="panel dashboard-quick"><span>💡</span><input id="dashboardIdeaInput" placeholder="思いつきをここにメモ"><button id="dashboardIdeaAdd" class="primary">思いつきメモに送信</button></section><div class="dashboard-metrics">${card('今日の仕事',todayItems.length+'件','残りの対象','blue')}${card('予定時間',total?`${Math.floor(total/60)}時間${total%60}分`:'0分','時間入力分','purple')}${card('今日の完了',doneToday.length+'件','おつかれさま','green')}${card('次の日以降',active.filter(t=>t.date===tom).length+'件','ちら見','orange')}</div>${risk.length?section('今日やばそう','⚠',risk):''}<div class="dashboard-grid">${section('絶対今日','🔥',active.filter(t=>t.status==='★絶対今日').slice(0,6))}${section('早め','🐇',active.filter(t=>t.status==='早め').slice(0,6))}${section('まち','⏸',active.filter(t=>t.status==='まち').slice(0,6))}${section('一時保留','📦',active.filter(t=>t.status==='一時保留').slice(0,6))}${section('次の日以降','🌅',active.filter(t=>t.date===tom).slice(0,6))}<section class="dashboard-spacer" aria-hidden="true"></section>${section('思いつきメモ','💡',ideaMemos,true)}${section('仕事メモ','📝',workMemos,true)}</div>`;document.querySelectorAll('.dashboard-task-open').forEach(b=>b.onclick=()=>openTask(state.tasks.find(t=>t.id===b.dataset.id)));document.querySelectorAll('.dashboard-copy').forEach(b=>b.onclick=e=>{e.stopPropagation();const t=state.tasks.find(x=>x.id===b.dataset.id);copyText(taskCopyText(t),'メモをコピーしたよ')});const addIdea=()=>{const input=$('#dashboardIdeaInput'),title=input.value.trim();if(!title)return;state.tasks.unshift({id:uid(),title,category:'思いつき',status:'思いつき',date:today(),minutes:null,note:'',kind:'idea',pinned:false,excludeFromSheet:true,createdAt:new Date().toISOString()});input.value='';dirty();render();toast('思いつきBOXへ追加したよ')};$('#dashboardIdeaAdd').onclick=addIdea;$('#dashboardIdeaInput').onkeydown=e=>{if(e.key==='Enter')addIdea()}}
 function renderTasks(){let tasks=tasksForPage().filter(matchesSearch);const doneToday=state.tasks.filter(isDoneToday).length;const visibleIDs=new Set(tasks.map(t=>t.id));[...selectedTaskIDs].forEach(id=>{if(!visibleIDs.has(id))selectedTaskIDs.delete(id)});if(page==='idea')return renderGroupedMemoTasks(tasks,doneToday);content.innerHTML=`<div class="summary"><div class="metric"><small>表示中</small><strong>${tasks.length}件</strong></div><div class="metric"><small>予定時間</small><strong>${tasks.filter(t=>t.status!=='毎日・定期').reduce((a,t)=>a+(+t.minutes||0),0)}分</strong></div><div class="metric"><small>今日の完了</small><strong>${doneToday}件</strong></div></div>${riskPanel()}${bulkBar()}<div class="task-list">${tasks.length?tasks.map(taskRow).join(''):'<div class="empty">ここにはまだ何もないよ</div>'}</div>`;bindTaskEvents()}
@@ -322,3 +322,112 @@ function makeLine(){
 }
 if(page==='line')renderLine();
 /* KIMU_LINE_FORMAT_PATCH_END */
+
+/* KIMU_DAILY_PLAN_GROUPED_PATCH_START */
+function nextWorkdayISO(base=new Date()){
+ const d=new Date(base);
+ d.setDate(d.getDate()+1);
+ while([0,6].includes(d.getDay()))d.setDate(d.getDate()+1);
+ return d.toISOString().slice(0,10);
+}
+function jpShortDate(value){
+ const d=new Date(`${value}T00:00:00`);
+ return d.toLocaleDateString('ja-JP',{month:'numeric',day:'numeric',weekday:'short'});
+}
+function isPlainWorkTask(t){
+ return t&&!t.done&&!t.deletedAt&&!t.archivedAt&&!isMemoTask(t);
+}
+function selectedWorkIDs(items){
+ const ids=new Set(items.map(t=>t.id));
+ return [...selectedTaskIDs].filter(id=>ids.has(id));
+}
+function moveTaskIDsToDate(ids,date,label='指定日'){
+ if(!ids.length)return toast('移動する仕事を選んでね');
+ snapshotUndo();
+ ids.forEach(id=>{const t=state.tasks.find(x=>x.id===id);if(t)t.date=date});
+ ids.forEach(id=>selectedTaskIDs.delete(id));
+ dirty();
+ renderDailyPlan();
+ toast(`${label}へ移動したよ`);
+}
+function dailyTaskLine(t){
+ const cls=t.status==='★絶対今日'?'urgent':t.status==='早め'?'early':t.status==='できればやる'?'mid':'';
+ return `<div class="daily-task-row" data-id="${t.id}">
+  <button class="select-task ${selectedTaskIDs.has(t.id)?'done':''}" aria-label="選択">${selectedTaskIDs.has(t.id)?'✓':'□'}</button>
+  <button class="daily-task-main">
+   <strong>${esc(t.title)}</strong>
+   <span class="meta"><span class="pill" style="color:${categoryColor(t.category||'memo')}">${esc(t.category||'memo')}</span><span class="pill ${cls}">${esc(t.status||'未設定')}</span>${t.date?` ${esc(t.date)}`:''}${t.minutes?`　${t.minutes}分`:''}</span>
+  </button>
+  <button class="secondary daily-move-one">指定日へ</button>
+ </div>`;
+}
+function renderDailyPlan(){
+ const targetInputID='dailyTargetDate';
+ const targetDate=localStorage.getItem('kimu-daily-target-date')||nextWorkdayISO();
+ const all=workTasks().filter(isPlainWorkTask);
+ const todayItems=all.filter(t=>isDate(t,today()));
+ const futureItems=all.filter(t=>t.date&&t.date!==today()).sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.title).localeCompare(String(b.title),'ja'));
+ const eligible=[...todayItems,...futureItems];
+ const eligibleIDs=new Set(eligible.map(t=>t.id));
+ [...selectedTaskIDs].forEach(id=>{if(!eligibleIDs.has(id))selectedTaskIDs.delete(id)});
+ const chosen=selectedWorkIDs(eligible);
+ const groups={};
+ futureItems.forEach(t=>(groups[t.date]||(groups[t.date]=[])).push(t));
+ const groupHTML=Object.keys(groups).sort().map(date=>`<details class="panel daily-date-group" open>
+  <summary><strong>${jpShortDate(date)}に移動した仕事 ▼</strong><span>${groups[date].length}件</span></summary>
+  <div class="daily-list">${groups[date].map(dailyTaskLine).join('')}</div>
+ </details>`).join('');
+ content.innerHTML=`<section class="panel daily-control"><h2>${new Date().getHours()<15?'今日の順番を整えよう':'残った仕事を整理しよう'}</h2>
+  <p class="meta">朝は今日の確認、夕方は次の日以降へ送る仕事を選べるよ。</p>
+  <div class="daily-toolbar">
+   <label>移動先 <input id="${targetInputID}" type="date" value="${esc(targetDate)}"></label>
+   <button id="dailyNextWorkday" class="secondary">次の平日</button>
+   <button id="dailyMoveTodayAll" class="secondary" ${todayItems.length?'':'disabled'}>今日全部</button>
+   <button id="dailyMoveSelected" class="primary" ${chosen.length?'':'disabled'}>選択を移動</button>
+   <select id="dailyPreset" ${todayItems.length?'':'disabled'}>
+    <option value="">プリセット…</option>
+    <option value="unfinished">未完了だけ</option>
+    <option value="exceptUrgent">絶対今日以外</option>
+    <option value="movable">まち・長期以外</option>
+    <option value="todayLabel">今日ラベルだけ</option>
+   </select>
+   ${chosen.length?`<span class="meta">${chosen.length}件選択中</span><button id="dailyClear" class="secondary">選択解除</button>`:''}
+  </div>
+ </section>
+ ${groupHTML}
+ <section class="panel daily-date-group"><h2>今日の残り仕事（${jpShortDate(today())}）</h2>
+  <div class="daily-list">${todayItems.length?todayItems.map(dailyTaskLine).join(''):'<p class="empty">今日の仕事はないよ</p>'}</div>
+ </section>`;
+ const getTarget=()=>$('#'+targetInputID)?.value||nextWorkdayISO();
+ $('#'+targetInputID).onchange=e=>localStorage.setItem('kimu-daily-target-date',e.target.value);
+ $('#dailyNextWorkday').onclick=()=>{const value=nextWorkdayISO();localStorage.setItem('kimu-daily-target-date',value);renderDailyPlan()};
+ $('#dailyMoveTodayAll').onclick=()=>moveTaskIDsToDate(todayItems.map(t=>t.id),getTarget(),jpShortDate(getTarget()));
+ $('#dailyMoveSelected').onclick=()=>moveTaskIDsToDate(chosen,getTarget(),jpShortDate(getTarget()));
+ $('#dailyPreset')?.addEventListener('change',e=>{
+  const p=e.target.value;if(!p)return;
+  const pick=todayItems.filter(t=>p==='unfinished'||(p==='exceptUrgent'&&t.status!=='★絶対今日')||(p==='movable'&&!['まち','いつかやる'].includes(t.status))||(p==='todayLabel'&&['★絶対今日','早め'].includes(t.status)));
+  moveTaskIDsToDate(pick.map(t=>t.id),getTarget(),jpShortDate(getTarget()));
+ });
+ $('#dailyClear')?.addEventListener('click',()=>{selectedTaskIDs.clear();renderDailyPlan()});
+ document.querySelectorAll('.daily-task-row').forEach(row=>{
+  row.querySelector('.select-task').onclick=e=>{e.stopPropagation();selectedTaskIDs.has(row.dataset.id)?selectedTaskIDs.delete(row.dataset.id):selectedTaskIDs.add(row.dataset.id);renderDailyPlan()};
+  row.querySelector('.daily-task-main').onclick=()=>openTask(state.tasks.find(t=>t.id===row.dataset.id));
+  row.querySelector('.daily-move-one').onclick=()=>moveTaskIDsToDate([row.dataset.id],getTarget(),jpShortDate(getTarget()));
+ });
+}
+bulkBar=function(){
+ if(!selectedTaskIDs.size)return'';
+ return `<section class="panel bulk-actions"><div class="row spread"><strong>${selectedTaskIDs.size}件を選択中</strong><button class="secondary bulk-clear">選択解除</button></div><div class="row"><button class="secondary bulk-status" data-status="完了">完了</button><button class="secondary bulk-date" data-date="${today()}">本日へ戻す</button><button class="secondary bulk-date" data-date="${nextWorkdayISO()}">明日へ移動</button><button class="secondary bulk-prompt-date">指定日へ移動</button><button class="secondary bulk-duplicate">複製</button><button class="secondary bulk-pin">ピックアップ</button><button class="secondary bulk-status" data-status="仕事メモ">仕事メモにする</button><button class="secondary bulk-exclude">アプリ専用にする</button><button class="secondary bulk-include">アプリ専用を解除</button><button class="danger bulk-delete">削除</button></div></section>`;
+};
+const originalBindTaskEventsForDailyPatch=bindTaskEvents;
+bindTaskEvents=function(){
+ originalBindTaskEventsForDailyPatch();
+ document.querySelectorAll('.bulk-date').forEach(b=>b.onclick=()=>{snapshotUndo();[...selectedTaskIDs].forEach(id=>{const t=state.tasks.find(x=>x.id===id);if(t)t.date=b.dataset.date});selectedTaskIDs.clear();dirty();render();toast('日付を変更したよ')});
+ document.querySelectorAll('.bulk-prompt-date').forEach(b=>b.onclick=()=>{const date=prompt('移動先の日付（YYYY-MM-DD）',nextWorkdayISO());if(!date)return;snapshotUndo();[...selectedTaskIDs].forEach(id=>{const t=state.tasks.find(x=>x.id===id);if(t)t.date=date});selectedTaskIDs.clear();dirty();render();toast('指定日へ移動したよ')});
+ document.querySelectorAll('.bulk-duplicate').forEach(b=>b.onclick=()=>{snapshotUndo();const copies=[...selectedTaskIDs].map(id=>state.tasks.find(t=>t.id===id)).filter(Boolean).map(t=>({...clone(t),id:uid(),title:t.title+'（コピー）',createdAt:new Date().toISOString(),done:false,completedAt:null}));state.tasks.unshift(...copies);selectedTaskIDs.clear();dirty();render();toast('複製したよ')});
+ document.querySelectorAll('.bulk-pin').forEach(b=>b.onclick=()=>{snapshotUndo();[...selectedTaskIDs].forEach(id=>{const t=state.tasks.find(x=>x.id===id);if(t)t.pinned=true});selectedTaskIDs.clear();dirty();render();toast('ピックアップにしたよ')});
+ document.querySelectorAll('.bulk-exclude').forEach(b=>b.onclick=()=>{snapshotUndo();[...selectedTaskIDs].forEach(id=>{const t=state.tasks.find(x=>x.id===id);if(t)t.excludeFromSheet=true});selectedTaskIDs.clear();dirty();render();toast('アプリ専用にしたよ')});
+ document.querySelectorAll('.bulk-include').forEach(b=>b.onclick=()=>{snapshotUndo();[...selectedTaskIDs].forEach(id=>{const t=state.tasks.find(x=>x.id===id);if(t)t.excludeFromSheet=false});selectedTaskIDs.clear();dirty();render();toast('アプリ専用を解除したよ')});
+};
+if(page==='dailyPlan')renderDailyPlan();
+/* KIMU_DAILY_PLAN_GROUPED_PATCH_END */
