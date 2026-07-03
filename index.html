@@ -35,6 +35,22 @@
   <dialog id="taskDialog" class="sheet"><form method="dialog" id="taskForm"></form></dialog>
   <dialog id="importDialog" class="sheet"><form method="dialog" id="importForm"></form></dialog>
   <div id="toast" class="toast"></div>
-  <script type="module" src="app-v44.js?v=app-only-0eb97ef"></script>
+  <script>
+    (function () {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations()
+          .then(function (registrations) {
+            registrations.forEach(function (registration) { registration.unregister(); });
+          })
+          .catch(function () {});
+      }
+      if ('caches' in window) {
+        caches.keys()
+          .then(function (keys) { keys.forEach(function (key) { caches.delete(key); }); })
+          .catch(function () {});
+      }
+    })();
+  </script>
+  <script type="module" src="app-v45.js?v=cache-reset-20260703"></script>
 </body>
 </html>
