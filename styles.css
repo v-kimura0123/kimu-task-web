@@ -87,8 +87,8 @@
 .workday-row input{border:1px solid var(--line);border-radius:8px;padding:7px;background:#fbfcfe}
 @media(max-width:760px){.attendance-current{grid-template-columns:1fr}.workday-row{grid-template-columns:1fr 1fr}.workday-row strong{grid-column:1/-1}.workday-row label{grid-column:1/-1}.workday-row button{padding:8px 9px}}
 
-/* web-lite-card-layout-v1 */
-.task-list .lite-task{
+/* web-lite-card-layout-v2 */
+.lite-task{
   display:grid;
   grid-template-columns:28px minmax(0,1fr) auto auto;
   align-items:center;
@@ -98,8 +98,14 @@
   background:#fff;
   min-height:0;
 }
-.task-list .lite-task:last-child{border-bottom:0}
-.task-list .lite-task:hover{background:#f8fafc}
+.lite-task:last-child{border-bottom:0}
+.lite-task:hover{background:#f8fafc}
+.panel>.lite-task{
+  margin:0 -2px;
+  border-radius:0;
+}
+.panel>.lite-task:first-of-type{border-top:1px solid #edf1f6}
+.panel>.lite-task:last-child{border-bottom:0}
 .lite-task .check{
   width:20px;
   height:20px;
@@ -159,7 +165,7 @@
   writing-mode:horizontal-tb;
 }
 @media(max-width:760px){
-  .task-list .lite-task{
+  .lite-task{
     grid-template-columns:26px minmax(0,1fr);
     align-items:start;
     padding:13px 12px;
