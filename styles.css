@@ -58,6 +58,31 @@
 .nav-top .nav-item[data-page="dashboard"]{font-size:16px;font-weight:850;padding:13px 12px;background:#ffffff12;margin-bottom:4px}
 .nav-top .nav-item[data-page="dashboard"] span,.nav-top .nav-item[data-page="dashboard"]::first-letter{font-size:20px}
 .nav-top .nav-item[data-page="dashboard"].active{background:#ffffff24;box-shadow:inset 4px 0 var(--teal)}
-.dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-.dashboard-spacer{display:block;min-height:1px}
+.dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+.dashboard-section{align-self:start}
+.dashboard-spacer{display:block;min-height:0}
 @media(max-width:760px){.dashboard-grid{grid-template-columns:1fr}.dashboard-spacer{display:none}}
+
+/* timeline-progress-v1 */
+.timeline-row.planned .timeline-card,.timeline-row.progress .timeline-card{position:relative;padding-left:18px}
+.timeline-row.planned .timeline-card::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:5px;border-radius:999px;background:var(--tl-color,#18b9b6)}
+.timeline-row.progress .timeline-card::before{content:"";position:absolute;left:0;top:18px;width:10px;height:10px;border-radius:50%;background:var(--tl-color,#18b9b6)}
+
+
+/* attendance-web-v2 */
+.attendance-current{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:12px 0 14px}
+.time-tile{border:1px solid var(--line);border-radius:14px;background:#fbfcfe;padding:13px;display:grid;gap:7px;min-width:0}
+.time-tile small{font-size:12px;font-weight:800;color:var(--muted)}
+.time-tile input{border:0;background:transparent;font-size:26px;font-weight:850;min-width:0;width:100%;padding:0;color:inherit}
+.time-tile strong{font-size:26px;line-height:1.2}
+.time-tile.blue{color:#1f6feb;background:#f3f8ff}
+.time-tile.orange{color:#d97706;background:#fff8ed}
+.time-tile.green{color:#159947;background:#f1fbf4}
+.month-history{border-top:1px solid var(--line);padding:10px 0}
+.month-history:first-of-type{border-top:0}
+.month-history summary{cursor:pointer;font-weight:850;margin-bottom:8px}
+.workday-row{display:grid;grid-template-columns:70px repeat(2,minmax(118px,1fr)) repeat(4,auto);gap:8px;align-items:center;padding:8px 0;border-top:1px solid #edf1f6}
+.workday-row:first-of-type{border-top:0}
+.workday-row label{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.workday-row input{border:1px solid var(--line);border-radius:8px;padding:7px;background:#fbfcfe}
+@media(max-width:760px){.attendance-current{grid-template-columns:1fr}.workday-row{grid-template-columns:1fr 1fr}.workday-row strong{grid-column:1/-1}.workday-row label{grid-column:1/-1}.workday-row button{padding:8px 9px}}
