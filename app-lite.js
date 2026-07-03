@@ -54,7 +54,10 @@ function renderNav(){
     ['sync','↻','同期設定']
   ];
   $('#nav').innerHTML=`<div class="nav-top">${items.map(([id,icon,label])=>`<button class="nav-item ${page===id?'active':''}" data-page="${id}"><span>${icon}</span>${label}</button>`).join('')}</div>`;
-  document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{page=b.dataset.page;closeSidebar();render()});
+  document.querySelectorAll('[data-page]').forEach(b=>{
+    b.classList.toggle('active',b.dataset.page===page);
+    b.onclick=()=>{page=b.dataset.page;closeSidebar();render()};
+  });
 }
 
 function setSidebar(open){

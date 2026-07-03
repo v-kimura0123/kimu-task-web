@@ -9,6 +9,24 @@
   body.sidebar-open .scrim,
   .scrim.open,
   .scrim[data-open="true"]{display:block;opacity:1;pointer-events:auto}
+  .bottom-nav{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:5px;
+    z-index:90;
+  }
+  .bottom-nav button{
+    font-size:11px;
+    line-height:1.2;
+    padding:9px 3px;
+  }
+  .bottom-nav button.active{
+    background:#ffffff30;
+    box-shadow:inset 0 0 0 1px #ffffff45;
+  }
+  .content{
+    padding-bottom:96px!important;
+  }
 }
 .nav-row{display:flex;align-items:center;position:relative}.nav-row-after-separator{border-top:1px solid #ffffff1f;margin-top:8px;padding-top:8px}.nav-row .nav-item{padding-right:38px}.quick-add{position:absolute;right:4px;width:28px;height:28px;border:0;border-radius:7px;background:#ffffff12;color:#cde4f7;font-size:17px}.quick-add:hover{background:#ffffff25;color:white}.link-form{display:grid;grid-template-columns:1fr 2fr auto;gap:9px}.link-form input{border:1px solid var(--line);border-radius:8px;padding:9px}.link-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}.link-card{background:white;border:1px solid var(--line);border-radius:13px;padding:14px}.link-card>a{display:flex;gap:10px;color:inherit;text-decoration:none;margin-bottom:12px}.link-card>a>span{font-size:24px}.link-card strong,.link-card small{display:block}.link-card small{color:var(--muted);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}@media(max-width:760px){.link-form{grid-template-columns:1fr}.link-form .primary{width:100%}}
 .image-form{display:grid;grid-template-columns:auto 1fr;gap:9px}.image-form input,.image-form textarea{border:1px solid var(--line);border-radius:8px;padding:9px}.image-form textarea{grid-column:1/-1;min-height:70px}.image-picker{background:#e9eef5;border-radius:9px;padding:9px 13px;font-weight:650;cursor:pointer}.image-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}.image-card{background:white;border:1px solid var(--line);border-radius:14px;overflow:hidden}.image-card>img{width:100%;height:190px;object-fit:cover;background:#e9eef5}.image-card>div{padding:12px}.image-card p{color:var(--muted);font-size:13px}.image-card small{color:var(--muted)}.task-thumb{width:42px;height:42px;object-fit:cover;border-radius:7px;float:left;margin-right:9px}@media(max-width:760px){.image-form{grid-template-columns:1fr}.image-form textarea{grid-column:auto}.image-form .primary{width:100%}}

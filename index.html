@@ -13,7 +13,7 @@
   <title>Kimu Task</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=46">
+  <link rel="stylesheet" href="styles.css?v=47">
 </head>
 <body>
   <div id="app">
@@ -31,6 +31,13 @@
       </header>
       <section id="content" class="content"></section>
     </main>
+    <nav id="bottomNav" class="bottom-nav mobile-only" aria-label="スマホ用メニュー">
+      <button data-page="dashboard">ホーム</button>
+      <button data-page="today">今日</button>
+      <button data-page="future">次日</button>
+      <button data-page="idea">思いつき</button>
+      <button data-page="memo">仕事メモ</button>
+    </nav>
   </div>
   <dialog id="taskDialog" class="sheet"><form method="dialog" id="taskForm"></form></dialog>
   <dialog id="importDialog" class="sheet"><form method="dialog" id="importForm"></form></dialog>
@@ -51,7 +58,7 @@
       }
       const script = document.createElement('script');
       script.type = 'module';
-      script.src = 'app-lite.js?v=lite-20260703-sidebar2-' + Date.now();
+      script.src = 'app-lite.js?v=lite-20260703-bottomnav-' + Date.now();
       document.body.appendChild(script);
     })();
   </script>
