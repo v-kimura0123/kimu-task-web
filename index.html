@@ -36,21 +36,31 @@
   <dialog id="importDialog" class="sheet"><form method="dialog" id="importForm"></form></dialog>
   <div id="toast" class="toast"></div>
   <script>
-    (function () {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations()
-          .then(function (registrations) {
-            registrations.forEach(function (registration) { registration.unregister(); });
-          })
-          .catch(function () {});
+    (async function () {
+      try {
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map(function (registration) { return registration.unregister(); }));
+        }
+        if ('caches' in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map(function (key) { return caches.delete(key); }));
+        }
+      } catch (error) {
+        console.warn('Kimu Task cache reset skipped', error);
       }
-      if ('caches' in window) {
-        caches.keys()
-          .then(function (keys) { keys.forEach(function (key) { caches.delete(key); }); })
-          .catch(function () {});
-      }
+
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = 'app-v45.js?v=cache-reset-20260703b-' + Date.now();
+      script.onerror = function () {
+        const content = document.getElementById('content');
+        if (content) {
+          content.innerHTML = '<section class="panel"><h2>読み込みに失敗したよ</h2><p class="meta">キャッシュを消してから、もう一度開き直してみてね。</p></section>';
+        }
+      };
+      document.body.appendChild(script);
     })();
   </script>
-  <script type="module" src="app-v45.js?v=cache-reset-20260703"></script>
 </body>
 </html>
