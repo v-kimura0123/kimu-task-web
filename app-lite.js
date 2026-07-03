@@ -57,14 +57,21 @@ function renderNav(){
   document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{page=b.dataset.page;closeSidebar();render()});
 }
 
-function openSidebar(){
-  $('#sidebar')?.classList.add('open');
-  $('#scrim')?.classList.add('open');
+function setSidebar(open){
+  const sidebar=$('#sidebar'),scrim=$('#scrim');
+  document.body.classList.toggle('sidebar-open',open);
+  sidebar?.classList.toggle('open',open);
+  scrim?.classList.toggle('open',open);
+  if(open){
+    sidebar?.setAttribute('data-open','true');
+    scrim?.setAttribute('data-open','true');
+  }else{
+    sidebar?.removeAttribute('data-open');
+    scrim?.removeAttribute('data-open');
+  }
 }
-function closeSidebar(){
-  $('#sidebar')?.classList.remove('open');
-  $('#scrim')?.classList.remove('open');
-}
+function openSidebar(){setSidebar(true)}
+function closeSidebar(){setSidebar(false)}
 
 function cardTask(t,{memo=false}={}){
   const d=dateOnly(t.taskDate||t.sheetBatchDate);
