@@ -54,7 +54,16 @@ function renderNav(){
     ['sync','↻','同期設定']
   ];
   $('#nav').innerHTML=`<div class="nav-top">${items.map(([id,icon,label])=>`<button class="nav-item ${page===id?'active':''}" data-page="${id}"><span>${icon}</span>${label}</button>`).join('')}</div>`;
-  document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{page=b.dataset.page;render()});
+  document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{page=b.dataset.page;closeSidebar();render()});
+}
+
+function openSidebar(){
+  $('#sidebar')?.classList.add('open');
+  $('#scrim')?.classList.add('open');
+}
+function closeSidebar(){
+  $('#sidebar')?.classList.remove('open');
+  $('#scrim')?.classList.remove('open');
 }
 
 function cardTask(t,{memo=false}={}){
@@ -217,8 +226,8 @@ async function pushCloud(silent=false){
   if(!silent)toast('Macへ送ったよ');
 }
 
-$('#menuButton').onclick=()=>document.body.classList.add('sidebar-open');
-$('#closeSidebar').onclick=()=>document.body.classList.remove('sidebar-open');
-$('#scrim').onclick=()=>document.body.classList.remove('sidebar-open');
+$('#menuButton').onclick=openSidebar;
+$('#closeSidebar').onclick=closeSidebar;
+$('#scrim').onclick=closeSidebar;
 render();
 pullCloud(true).then(render).catch(()=>{page='sync';render()});
